@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Practical JavaScript</title>
+  </head>
+
+  <body>
+    <input id="add-input" placeholder="add a todo" />
+    <button id="add-button">Add</button>
+
+    <ul id="todo-list"></ul>
+
+    <button id="toggle-all-button">Toggle all complete</button>
+
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <script>
+      todos = [];
+
+      async function getTodos() {
+        content = await fetch("/todos").then((response) => response.json());
+        todos = content.todos;
+        displayTodos();
+      }
+
+      getTodos();
+
+      function displayTodos() {
+        var todoListUl = document.getElementById("todo-list");
+        todoListUl.innerHTML = "";
+
+        for (var i = 0; i < todos.length; i++) {
+          var todoListItem = document.createElement("li");
+          todoListItem.id = "li-" + i;
+
+          var todoTextElement = document.createElement("span");
+          todoTextElement.id = "todoText-" + i;
+          todoTextElement.innerText = "  " + todos[i].todoText + "  ";
+
+          var removeButton = document.createElement("button");
+          var toggleButton = document.createElement("button");
+
+          removeButton.id = "remove-" + i;
+          removeButton.innerText = "Delete";
+          removeButton.addEventListener("click", remove);
+
+          var checkBox = document.createElement("span");
+          checkBox.id = "checkbox-" + i;
+          if (todos[i].completed) {
+            checkBox.innerText = "[x]";
+          } else {
+            checkBox.innerText = "[  ]";
+          }
+
+          checkBox.addEventListener("click", toggle);
+          todoTextElement.addEventListener("click", edit);
+
+          todoListItem.appendChild(checkBox);
+          todoListItem.appendChild(todoTextElement);
+          todoListItem.appendChild(removeButton);
+          todoListUl.appendChild(todoListItem);
+        }
+
+        localStorage.setItem("todos", JSON.stringify(todos));
+      }
+
+      async function updateTodos() {
+        const myInit = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ todos: todos }),
+        };
+
+        const request = new Request("/todos", myInit);
+
+        const response = await fetch(request);
+
+        return response.json();
+      }
+      function add() {
+        var initialTodoText = addInput.value;
+        if (initialTodoText !== "") {
+          todos.unshift({ todoText: initialTodoText, completed: false });
+          addInput.value = "";
+        }
+        updateTodos().then((data) => {
+          console.log(data);
+          displayTodos();
+        });
+      }
+
+      function edit(event) {
+        var childListItemInputElement = document.createElement("input");
+
+        var todoListItem = event.currentTarget;
+
+        var currentText = todoListItem.innerText;
+        childListItemInputElement.setAttribute("value", currentText);
+        childListItemInputElement.setSelectionRange(
+          currentText.length,
+          currentText.length
+        );
+        todoListItem.replaceWith(childListItemInputElement);
+
+        childListItemInputElement.focus();
+
+        function editEnterKeyHandler() {
+          var index = todoListItem.id.split("-")[1];
+          todos[index].todoText = childListItemInputElement.value;
+
+          updateTodos().then((data) => {
+            console.log(data);
+            displayTodos();
+          });
+        }
+
+        childListItemInputElement.addEventListener(
+          "keypress",
+          function (event) {
+            // If the user presses the "Enter" key on the keyboard
+            if (event.key === "Enter") {
+              // Cancel the default action, if needed
+              event.preventDefault();
+              // Trigger the button element with a click
+              editEnterKeyHandler(event);
+            }
+          }
+        );
+
+        childListItemInputElement.addEventListener("blur", editEnterKeyHandler);
+      }
+
+      function remove(ev) {
+        var index = ev.currentTarget.id.split("-")[1];
+        if (index !== "") {
+          todos.splice(index, 1);
+        }
+
+        updateTodos().then((data) => {
+          console.log(data);
+          displayTodos();
+        });
+      }
+
+      function toggle(ev) {
+        var index = ev.currentTarget.id.split("-")[1];
+        if (index !== "") {
+          todos[index].completed = !todos[index].completed;
+        }
+
+        updateTodos().then((data) => {
+          console.log(data);
+          displayTodos();
+        });
+      }
+
+      function toggleAll() {
+        var allTrueFlag = true;
+
+        for (var i = 0; i < todos.length; i++) {
+          if (!todos[i].completed) {
+            allTrueFlag = false;
+            break;
+          }
+        }
+
+        if (allTrueFlag) {
+          for (var i = 0; i < todos.length; i++) {
+            todos[i].completed = false;
+          }
+        } else {
+          for (var i = 0; i < todos.length; i++) {
+            todos[i].completed = true;
+          }
+        }
+
+        updateTodos().then((data) => {
+          console.log(data);
+          displayTodos();
+        });
+      }
+
+      var toggleAllButton = document.getElementById("toggle-all-button");
+      toggleAllButton.addEventListener("click", toggleAll);
+
+      var addButton = document.getElementById("add-button");
+      var addInput = document.getElementById("add-input");
+
+      addButton.addEventListener("click", add);
+      addInput.addEventListener("keypress", function (event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          // Trigger the button element with a click
+          document.getElementById("add-button").click();
+        }
+      });
+    </script>
+  </body>
+</html>

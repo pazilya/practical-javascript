@@ -1,0 +1,66 @@
+Version 13 
+[X] It should request data with fetch /todos 
+[X] It should request with method POST for a new todo
+[X] It should request update after editting
+[X] It should request update after removing
+[X] It should request update after toggle & toggleAll
+[X] todos "POST" backend should return up-to-date result of get function
+[] When you click another element while editing, it should
+    cancel editing AND click that element.
+
+Version 12
+[X] each todo should have its own edit button
+[X] edit buttons should work
+[X] when you click away while editing, save value and stop editing
+
+Version 11
+[x] each todo should have its own toggle button
+[x] toggle buttons should work
+
+Version 10
+[x] each todo should have its own remove button.
+[x] the remove buttons should actually work.
+
+Version 9
+[x] there should be a li for each todo
+[x] each li should show todo text
+[x] each li should show completed property
+
+Version 8
+[x] there should be a working button for adding a todo
+[x] there should be a working button for editing a todo
+[x] there should be a working button for removing a todo
+[x] there should be a working button for toggle a todo
+
+
+Version 7
+[x] It should have a displayTodos button item
+Version 6
+[x] It should have a function for toggling all todos.
+[x] If everything is false ==> change everything to true.
+[x] If everything is true ==> change everything to false.
+[x] if mixed ==> change everything to true.
+
+Version 5
+[x] It should have a functin for displaying todos.
+[x] displayTodos should show the todoText property.
+[x] displayTodos should show the completed property.
+
+Version 4
+[x] It should have a function to mark a TODO complete (toggle)
+
+Version 3
+[x] It should initialize the array with objects
+[x] The add/edit function should add/edit objects
+
+Version 2
+[x] It should have a function to add a TODO
+[x] It should have a function to edit a TODO
+[x] It should have a function to remove a TODO
+
+Version 1
+[x] It should have a place to store TODOs
+[x] It should have a place to store TODOs
+[x] It should have a way to add a TODO
+[x] It should have a way to edit a TODO
+[x] It should have a way to remove a TODO

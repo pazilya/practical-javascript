@@ -1,0 +1,4 @@
+[] click away while editing seems to override the 
+    element that is clicked. 
+
+    
